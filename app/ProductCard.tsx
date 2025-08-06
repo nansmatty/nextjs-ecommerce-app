@@ -1,9 +1,12 @@
 import { Product } from '@/lib/mocks';
+import Image from 'next/image';
 
 function ProductCard({ product }: { product: Product }) {
 	return (
 		<div className='border p-4 rounded-lg shadow hover:shadow-lg transition-shadow'>
-			<img src={product.imageUrl} alt={product.name} className='w-full h-48 object-cover mb-4 rounded' />
+			<div className='relative w-full h-48 mb-4'>
+				<Image src={product.imageUrl} alt={product.name} className='object-cover' fill />
+			</div>
 			<h2 className='text-xl font-semibold mb-2'>{product.name}</h2>
 			<p className='text-gray-700 mb-2'>${product.price.toFixed(2)}</p>
 			<p className='text-gray-500'>{product.description}</p>

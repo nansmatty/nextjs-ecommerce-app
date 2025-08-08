@@ -1,5 +1,5 @@
 // 1
-import { PrismaClient } from '@/app/generated/prisma/client';
+import { PrismaClient, Product } from '@/app/generated/prisma/client';
 import { withAccelerate } from '@prisma/extension-accelerate';
 
 // 2
@@ -23,7 +23,7 @@ async function main() {
 		data: { name: 'Home', slug: 'home' },
 	});
 
-	const products = [
+	const products: Product[] = [
 		{
 			id: '1',
 			name: 'Wireless Headphones',

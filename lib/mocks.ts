@@ -46,6 +46,6 @@ export const mockProducts: Product[] = [
 		description: 'Durable leather backpack with multiple compartments.',
 		price: 79.99,
 		imageUrl: 'https://images.unsplash.com/photo-1491637639811-60e2756cc1c7',
-		category: 'Bagpack',
+		category: 'Fashion',
 	},
 ];

@@ -1,11 +1,12 @@
 import { formatPrice } from '@/lib/utils';
 import Image from 'next/image';
 import { Product } from './generated/prisma';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 function ProductCard({ product }: { product: Product }) {
 	return (
-		<div className='border p-4 rounded-lg shadow hover:shadow-lg transition-shadow'>
-			<div className='relative w-full h-48 mb-4'>
+		<Card className='pt-0 overflow-hidden min-h-[300px]'>
+			<div className='relative aspect-video'>
 				{product.imageUrl && (
 					<Image
 						src={product.imageUrl}
@@ -16,11 +17,14 @@ function ProductCard({ product }: { product: Product }) {
 					/>
 				)}
 			</div>
-			<h2 className='text-xl font-semibold mb-2'>{product.name}</h2>
-			<p className='text-gray-700 mb-2'>{formatPrice(product.price)}</p>
-			<p className='text-gray-500'>{product.description}</p>
-			{/* <button className='mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors'>Add to Cart</button> */}
-		</div>
+			<CardHeader>
+				<CardTitle>{product.name}</CardTitle>
+				<CardDescription>{product.name}</CardDescription>
+			</CardHeader>
+			<CardFooter>
+				<p>{formatPrice(product.price)}</p>
+			</CardFooter>
+		</Card>
 	);
 }
 

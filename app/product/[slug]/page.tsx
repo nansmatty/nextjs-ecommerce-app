@@ -1,12 +1,13 @@
 import { getProductBySlug } from '@/lib/actions';
 import { formatPrice } from '@/lib/utils';
-import React from 'react';
+import { notFound } from 'next/navigation';
 
-const ProductPage = async ({ params }: { params: { slug: string } }) => {
-	const product = await getProductBySlug(params.slug);
+const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
+	const { slug } = await params;
+	const product = await getProductBySlug(slug);
 
 	if (!product) {
-		return <div>Product not found</div>;
+		notFound();
 	}
 
 	return (

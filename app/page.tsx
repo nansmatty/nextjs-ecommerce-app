@@ -15,8 +15,6 @@ async function Products({ page }: { page: number }) {
 		take: pageSize,
 	});
 
-	await new Promise((resolve) => setTimeout(resolve, 3000));
-
 	return (
 		<>
 			<p className='mb-5'>Showing {products.length} products</p>

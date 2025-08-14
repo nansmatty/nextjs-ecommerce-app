@@ -1,3 +1,4 @@
+import Breadcrumbs from '@/components/breadcrumbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -40,10 +41,17 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 		notFound();
 	}
 
+	const breadcrumbItems = [
+		{ label: 'Products', href: `/`, active: true },
+		{ label: product.category?.name || 'Category', href: `/category/${product.category?.slug}`, active: false },
+		{ label: product.name, href: `/product/${slug}`, active: true },
+	];
+
 	return (
-		<main className='w-screen mx-auto p-4'>
-			<Card className='max-w-7xl mx-auto'>
-				<CardContent className='p-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
+		<main className='container mx-auto py-4'>
+			<Breadcrumbs items={breadcrumbItems} />
+			<Card className=' mx-auto'>
+				<CardContent className='py-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
 					<div>
 						<div className='relative rounded-lg overflow-hidden aspect-video'>
 							{product.imageUrl && (

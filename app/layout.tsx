@@ -4,6 +4,7 @@ import './globals.css';
 import Link from 'next/link';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ModeToggle } from '@/components/mode-toggle';
+import Navbar from '@/components/navbar';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -29,18 +30,11 @@ export default function RootLayout({
 		<html lang='en' suppressHydrationWarning>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-					<ul>
-						<li>
-							<Link href='/'>Home</Link>
-						</li>
-						<li>
-							<Link href='/products'>Products</Link>
-						</li>
-						<li>
-							<ModeToggle />
-						</li>
-					</ul>
-					{children}
+					<>
+						<header>
+							<Navbar />
+						</header>
+					</>
 				</ThemeProvider>
 			</body>
 		</html>

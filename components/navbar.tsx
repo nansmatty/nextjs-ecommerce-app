@@ -3,6 +3,7 @@ import { ModeToggle } from './mode-toggle';
 import { Button } from './ui/button';
 import { Search, ShoppingCart, User } from 'lucide-react';
 import MobileNav from './mobile-nav';
+import SearchInput from './search-input';
 
 export const categories = [
 	{ id: 1, name: 'Electronics', href: '/category/electronics' },
@@ -32,13 +33,18 @@ const Navbar = () => {
 						</nav>
 					</div>
 				</div>
+
+				<div className='block w-full mx-4 md:mx-8'>
+					<SearchInput />
+				</div>
+
 				{/* asChild help us to use all those predefined classes had to button will be use in Link so in sense we are using button but it is not a button */}
 				<div className='flex items-center gap-0'>
-					<Button variant='ghost' size='icon' asChild>
+					{/* <Button variant='ghost' size='icon' asChild>
 						<Link href='/search'>
 							<Search className='h-5 w-5' />
 						</Link>
-					</Button>
+					</Button> */}
 
 					<Button variant='ghost' size='icon' asChild>
 						<Link href='/cart'>

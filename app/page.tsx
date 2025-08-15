@@ -36,8 +36,8 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
 	const totalPages = Math.ceil(total / pageSize);
 
 	return (
-		<main className='container mx-auto py-4'>
-			<Breadcrumbs items={[{ label: 'Home', href: '/' }]} />
+		<main className='container mx-auto py-4 md:px-0 px-4'>
+			<Breadcrumbs items={[{ label: 'Products', href: '/' }]} />
 
 			<Suspense key={page} fallback={<ProductsSkeleton />}>
 				<Products page={page} />
@@ -51,7 +51,7 @@ export default async function HomePage(props: { searchParams: SearchParams }) {
 
 					{Array.from({ length: totalPages }, (_, index) => (
 						<PaginationItem key={index}>
-							<PaginationLink href={`?page=${index + 1}`} className={page === index + 1 ? 'active border-2 border-black' : ''}>
+							<PaginationLink href={`?page=${index + 1}`} className={page === index + 1 ? 'active border-2 border-background' : ''}>
 								{index + 1}
 							</PaginationLink>
 						</PaginationItem>

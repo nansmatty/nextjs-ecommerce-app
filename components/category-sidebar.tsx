@@ -1,17 +1,21 @@
-import prisma from '@/lib/prisma';
+'use client';
+
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import React from 'react';
 
-const CategorySidebar = async ({ activeCategory }: { activeCategory?: string }) => {
-	const categories = await prisma.category.findMany({
-		select: {
-			name: true,
-			slug: true,
-		},
-		orderBy: {
-			name: 'asc',
-		},
-	});
+type Category = {
+	name: string;
+	slug: string;
+};
+
+type Props = {
+	categories: Category[];
+};
+
+const CategorySidebar = ({ categories }: Props) => {
+	const params = useParams();
+	const activeCategory = params.slug as string;
 
 	return (
 		<div className='w-[125px] flex-none'>

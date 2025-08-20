@@ -42,12 +42,12 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 	];
 
 	return (
-		<main className='container mx-auto py-4 md:px-0 px-4'>
+		<>
 			<Breadcrumbs items={breadcrumbs} />
 			<Suspense key={query} fallback={<ProductsSkeleton />}>
 				<Products query={query} />
 			</Suspense>
-		</main>
+		</>
 	);
 };
 

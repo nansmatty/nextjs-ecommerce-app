@@ -4,19 +4,31 @@ import ProductCard from '../../ProductCard';
 import prisma from '@/lib/prisma';
 import ProductsSkeleton from '../../ProductsSkeleton';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import CategorySidebar from '@/components/category-sidebar';
 
 // In promise because everything in nextjs 15 is promise based
 type CategoryPageProps = {
 	params: Promise<{ slug: string }>;
+	searchParams: Promise<{ sort?: string }>;
 };
 
-async function Products({ slug }: { slug: string }) {
+async function Products({ slug, sort }: { slug: string; sort?: string }) {
+	let orderBy: Record<string, 'asc' | 'desc'> | undefined = undefined;
+
+	if (sort === 'price-asc') {
+		orderBy = { price: 'asc' };
+	} else if (sort === 'price-desc') {
+		orderBy = { price: 'desc' };
+	}
+
 	const products = await prisma.product.findMany({
 		where: {
 			category: {
 				slug,
 			},
 		},
+		...(orderBy ? { orderBy } : {}),
 		take: 18, // Limit the number of products returned
 	});
 
@@ -35,8 +47,9 @@ async function Products({ slug }: { slug: string }) {
 	);
 }
 
-const CategoryPage = async ({ params }: CategoryPageProps) => {
+const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
 	const { slug } = await params;
+	const { sort } = await searchParams;
 
 	const category = await prisma.category.findUnique({
 		where: { slug },
@@ -54,9 +67,21 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
 	return (
 		<main className='container mx-auto py-4 md:px-0 px-4'>
 			<Breadcrumbs items={breadcrumbs} />
-			<Suspense key={slug} fallback={<ProductsSkeleton />}>
-				<Products slug={slug} />
-			</Suspense>
+			<div className='flex gap-3 text-sm mb-8'>
+				<Link href={`/search/${slug}`}>Latest</Link>
+				<Link href={`/search/${slug}?sort=price-asc`}>Price: Low to High</Link>
+				<Link href={`/search/${slug}?sort=price-desc`}>Price: High to Low</Link>
+			</div>
+			<div className='flex gap-4'>
+				<Suspense fallback={<div className='w-[125px]'>Loading...</div>}>
+					<CategorySidebar />
+				</Suspense>
+				<div className='flex-1'>
+					<Suspense key={`${slug}-${sort}`} fallback={<ProductsSkeleton />}>
+						<Products slug={slug} sort={sort} />
+					</Suspense>
+				</div>
+			</div>
 		</main>
 	);
 };

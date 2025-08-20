@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import { ModeToggle } from './mode-toggle';
 import { Button } from './ui/button';
-import { Search, ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User } from 'lucide-react';
 import MobileNav from './mobile-nav';
 import SearchInput from './search-input';
 
 export const categories = [
-	{ id: 1, name: 'Electronics', href: '/category/electronics' },
-	{ id: 2, name: 'Books', href: '/category/books' },
-	{ id: 3, name: 'Clothing', href: '/category/clothing' },
+	{ id: 1, name: 'Electronics', href: '/search/electronics' },
+	{ id: 2, name: 'Clothing', href: '/search/clothing' },
+	{ id: 3, name: 'Home', href: '/search/home' },
 ];
 
 const Navbar = () => {

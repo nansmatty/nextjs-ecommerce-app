@@ -43,7 +43,7 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 
 	const breadcrumbItems = [
 		{ label: 'Products', href: `/`, active: true },
-		{ label: product.category?.name || 'Category', href: `/category/${product.category?.slug}`, active: false },
+		{ label: product.category?.name || 'Category', href: `/search/${product.category?.slug}`, active: false },
 		{ label: product.name, href: `/product/${slug}`, active: true },
 	];
 

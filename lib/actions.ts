@@ -2,8 +2,9 @@
 
 import prisma from '@/lib/prisma';
 import { Prisma } from '@/app/generated/prisma';
-import { GetProductsParams, ShoppingCart } from './types';
+import { CartWithProducts, GetProductsParams, ShoppingCart } from './types';
 import { cookies } from 'next/headers';
+import { revalidateTag, unstable_cache } from 'next/cache';
 
 export async function getProductBySlug(slug: string) {
 	const product = await prisma.product.findUnique({
@@ -48,16 +49,20 @@ export async function getProducts({ slug, sort, query, page = 1, pageSize = 3 }:
 	});
 }
 
-async function findCartFromCookie() {
+async function findCartFromCookie(): Promise<CartWithProducts | null> {
 	const cartId = (await cookies()).get('cartId')?.value;
 	if (!cartId) return null;
 
-	const cart = await prisma.cart.findUnique({
-		where: { id: cartId },
-		include: { items: { include: { product: true } } },
-	});
-
-	return cart;
+	return unstable_cache(
+		async (id: string) => {
+			return await prisma.cart.findUnique({
+				where: { id },
+				include: { items: { include: { product: true } } },
+			});
+		},
+		[`cart-${cartId}`],
+		{ tags: [`cart-${cartId}`] }
+	)(cartId);
 }
 
 export async function getCart(): Promise<ShoppingCart | null> {
@@ -100,4 +105,6 @@ export async function addToCart(productId: string, quantity: number = 1) {
 			data: { cartId: cart.id, productId, quantity },
 		});
 	}
+
+	revalidateTag(`cart-${cart.id}`);
 }

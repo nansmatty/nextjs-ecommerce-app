@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { ModeToggle } from './mode-toggle';
 import { Button } from './ui/button';
-import { ShoppingCart, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import MobileNav from './mobile-nav';
 import SearchInput from './search-input';
 import CartIndicator from './cart-indicator';
+import { Suspense } from 'react';
+import CartIndicatorSkeleton from './cart-indicator-skeleton';
 
 export const categories = [
 	{ id: 1, name: 'Electronics', href: '/search/electronics' },
@@ -41,7 +43,9 @@ const Navbar = () => {
 
 				{/* asChild help us to use all those predefined classes had to button will be use in Link so in sense we are using button but it is not a button */}
 				<div className='flex items-center gap-0'>
-					<CartIndicator />
+					<Suspense fallback={<CartIndicatorSkeleton />}>
+						<CartIndicator />
+					</Suspense>
 
 					<Button variant='ghost' size='icon' asChild>
 						<Link href='/auth'>

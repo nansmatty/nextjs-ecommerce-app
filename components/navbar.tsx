@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { ShoppingCart, User } from 'lucide-react';
 import MobileNav from './mobile-nav';
 import SearchInput from './search-input';
+import CartIndicator from './cart-indicator';
 
 export const categories = [
 	{ id: 1, name: 'Electronics', href: '/search/electronics' },
@@ -40,17 +41,7 @@ const Navbar = () => {
 
 				{/* asChild help us to use all those predefined classes had to button will be use in Link so in sense we are using button but it is not a button */}
 				<div className='flex items-center gap-0'>
-					{/* <Button variant='ghost' size='icon' asChild>
-						<Link href='/search'>
-							<Search className='h-5 w-5' />
-						</Link>
-					</Button> */}
-
-					<Button variant='ghost' size='icon' asChild>
-						<Link href='/cart'>
-							<ShoppingCart className='h-5 w-5' />
-						</Link>
-					</Button>
+					<CartIndicator />
 
 					<Button variant='ghost' size='icon' asChild>
 						<Link href='/auth'>

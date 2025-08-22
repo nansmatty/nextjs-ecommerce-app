@@ -1,3 +1,4 @@
+import AddToCartButton from '@/components/add-to-cart-btn';
 import Breadcrumbs from '@/components/breadcrumbs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -48,7 +49,7 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 	];
 
 	return (
-		<main className='container mx-auto py-4'>
+		<main className='container mx-auto py-4 md:px-0 px-4'>
 			<Breadcrumbs items={breadcrumbItems} />
 			<Card className=' mx-auto'>
 				<CardContent className='py-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -88,12 +89,9 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 							</div>
 							<Separator className='my-4' />
 
-							<div className='flex items-center gap-4'>
-								<Button disabled={product.inventory === 0} className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors'>
-									<ShoppingCart className='w-4 h-4' />
-									{product.inventory > 0 ? 'Add to Cart' : 'Out of Stock'}
-								</Button>
-								<Button className='px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors'>
+							<div className='flex flex-col items-center gap-4'>
+								<AddToCartButton product={product} />
+								<Button className='px-4 py-2 bg-gray-200 w-full text-gray-800 rounded cursor-pointer hover:bg-gray-300 transition-colors'>
 									<HeartIcon className='w-4 h-4' />
 									Add to Wishlist
 								</Button>

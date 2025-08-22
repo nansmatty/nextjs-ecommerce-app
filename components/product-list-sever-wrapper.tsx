@@ -1,5 +1,6 @@
-import { getProducts, GetProductsParams } from '@/lib/actions';
+import { getProducts } from '@/lib/actions';
 import ProductList from './product-list';
+import { GetProductsParams } from '@/lib/types';
 
 interface ProductListServerWrapperProps {
 	params: GetProductsParams;

@@ -57,7 +57,14 @@ async function findCartFromCookie(): Promise<CartWithProducts | null> {
 		async (id: string) => {
 			return await prisma.cart.findUnique({
 				where: { id },
-				include: { items: { include: { product: true } } },
+				include: {
+					items: {
+						include: { product: true },
+						orderBy: {
+							createdAt: 'desc',
+						},
+					},
+				},
 			});
 		},
 		[`cart-${cartId}`],

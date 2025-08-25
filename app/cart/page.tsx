@@ -1,3 +1,4 @@
+import CartEntry from '@/components/cart-entry';
 import { getCart } from '@/lib/actions';
 
 export default async function CartPage() {
@@ -13,15 +14,8 @@ export default async function CartPage() {
 			) : (
 				<div>
 					{cart.items.map((item) => (
-						<div key={item.id} className='border-b py-4'>
-							<h2 className='text-lg font-semibold'>{item.product.name}</h2>
-							<p>Quantity: {item.quantity}</p>
-							<p>Price: ${item.product.price}</p>
-						</div>
+						<CartEntry key={item.id} cartItem={item} />
 					))}
-					<div className='mt-4'>
-						<h2 className='text-xl font-bold'>Total: ${cart.subtotal}</h2>
-					</div>
 				</div>
 			)}
 		</main>

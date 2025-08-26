@@ -20,3 +20,13 @@ export type ShoppingCart = CartWithProducts & {
 export type CartItemWithProduct = Prisma.CartItemGetPayload<{
 	include: { product: true };
 }>;
+
+export type OrderWithItemsAndProduct = Prisma.OrderGetPayload<{
+	include: {
+		items: {
+			include: {
+				product: true;
+			};
+		};
+	};
+}>;

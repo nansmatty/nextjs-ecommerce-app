@@ -7,13 +7,15 @@ export async function GET(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
 	const sessionId = searchParams.get('session_id');
 
+	let orderId: string | undefined = undefined;
+
 	if (!sessionId) {
 		notFound();
 	}
 
 	try {
 		const session = await stripe.checkout.sessions.retrieve(sessionId);
-		const orderId = session?.metadata?.orderId;
+		orderId = session?.metadata?.orderId;
 
 		if (!orderId) {
 			notFound();
@@ -30,16 +32,16 @@ export async function GET(request: NextRequest) {
 			notFound();
 		}
 
-		if (order.status !== 'pending_payment') {
+		if (order.status === 'pending_payment') {
 			await prisma.order.update({
 				where: { id: order.id },
 				data: { status: 'pending', stripeSessionId: null },
 			});
 		}
-
-		return redirect('/');
 	} catch (error) {
 		console.error('Error retrieving session or order:', error);
 		notFound();
 	}
+
+	return orderId ? redirect(`/order/${orderId}`) : notFound();
 }

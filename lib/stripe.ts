@@ -16,27 +16,26 @@ export async function createCheckoutSession(order: OrderWithItemsAndProduct) {
 	}
 
 	const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = order.items.map((item) => {
+		const images = [item.product.imageUrl ?? ''].filter(Boolean) as string[];
 		return {
 			price_data: {
 				currency: 'usd',
 				product_data: {
 					name: item.product.name,
 					description: item.product.description ?? '',
-					imageUrl: [item.product.imageUrl ?? ''],
+					images,
 				},
-
 				unit_amount: item.product.price * 100,
 			},
 			quantity: item.quantity,
 		};
 	});
 
-	const successUrl = `${process.env.NEXT_PUBLIC_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`;
-	const cancelUrl = `${process.env.NEXT_PUBLIC_URL}/cart?cancel=true`;
+	const successUrl = `${process.env.NEXT_PUBLIC_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+	const cancelUrl = `${process.env.NEXT_PUBLIC_URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`;
 
 	try {
 		// Initiate Stripe Checkout session
-
 		const session = await stripe.checkout.sessions.create({
 			mode: 'payment',
 			line_items,

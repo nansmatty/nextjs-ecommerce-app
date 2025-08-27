@@ -4,13 +4,13 @@ import { cookies } from 'next/headers';
 import { getCart } from './actions';
 import prisma from './prisma';
 import { createCheckoutSession } from './stripe';
+import { ProcessCheckoutResponse } from './types';
 
-export async function processCheckout() {
+export async function processCheckout(): Promise<ProcessCheckoutResponse> {
 	const cart = await getCart();
 
 	if (!cart || cart.items.length === 0) {
 		throw new Error('Cart is empty');
-		1;
 	}
 
 	let orderId: string | null = null;
@@ -75,7 +75,6 @@ export async function processCheckout() {
 		// 3. Create the stripe session
 
 		const { sessionId, sessionUrl } = await createCheckoutSession(fullOrder);
-
 		// 4. Return the session url and handle the errors
 
 		if (!sessionId || !sessionUrl) {
@@ -85,13 +84,13 @@ export async function processCheckout() {
 		// 5. Store the session id in the order & change the order status
 
 		await prisma.order.update({
-			where: { id: order.id },
-			data: { stripeSessionId: sessionId, status: 'pending' },
+			where: { id: fullOrder.id },
+			data: { stripeSessionId: sessionId, status: 'pending_payment' },
 		});
 
 		(await cookies()).delete('cartId');
 
-		return order;
+		return { sessionUrl, order: fullOrder };
 	} catch (error) {
 		// 1. OPTIONAL: the change the order status to failed
 

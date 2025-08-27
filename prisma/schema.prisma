@@ -21,17 +21,17 @@ model Product {
   price       Float
   imageUrl    String?
   slug        String      @unique
-  category    Category  @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  String
-  inventory   Int @default(0)
+  inventory   Int         @default(0)
   cartItems   CartItem[]
   orderItems  OrderItem[]
 }
 
 model Category {
-  id   String   @id @default(cuid())
-  name String
-  slug String   @unique
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
   products Product[]
 }
 
@@ -56,7 +56,6 @@ model CartItem {
   @@index([cartId])
   @@index([productId])
 }
-
 
 model Order {
   id                    String      @id @default(cuid())
@@ -83,4 +82,14 @@ model OrderItem {
 
   @@index([orderId])
   @@index([productId])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

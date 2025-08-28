@@ -3,11 +3,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { LoginSchema, LoginSchemaType } from '@/lib/schema';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { signIn } from 'next-auth/react';
 
 export default function SignInPage() {
 	const form = useForm<LoginSchemaType>({
@@ -18,8 +19,14 @@ export default function SignInPage() {
 		},
 	});
 
-	const onSubmit = (data: LoginSchemaType) => {
+	const onSubmit = async (data: LoginSchemaType) => {
 		console.log(data);
+		const result = await signIn('credentials', {
+			email: data.email,
+			password: data.password,
+			redirect: false,
+		});
+		console.log(result);
 	};
 
 	return (
@@ -30,19 +37,39 @@ export default function SignInPage() {
 					<CardDescription className='text-center'>Enter your email and password to sign in to you account</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form className='space-y-4'>
-						<div className='space-y-2'>
-							<Label htmlFor='email'>Email</Label>
-							<Input type='email' id='email' placeholder='Email' />
-						</div>
-						<div className='space-y-2'>
-							<Label htmlFor='password'>Password</Label>
-							<Input type='password' id='password' placeholder='Password' />
-						</div>
-						<Button type='submit' className='w-full'>
-							Sign In
-						</Button>
-					</form>
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+							<FormField
+								control={form.control}
+								name='email'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input placeholder='Email' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='password'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Password</FormLabel>
+										<FormControl>
+											<Input type='password' placeholder='Password' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<Button type='submit' className='w-full'>
+								Sign In
+							</Button>
+						</form>
+					</Form>
 				</CardContent>
 				<CardFooter>
 					<div className='w-full flex justify-center text-sm'>

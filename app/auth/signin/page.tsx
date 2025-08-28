@@ -8,9 +8,16 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useState } from 'react';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircleIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
+	const [error, setError] = useState<string | null>(null);
+	const { data: session, update: updateSession } = useSession();
+
 	const form = useForm<LoginSchemaType>({
 		resolver: zodResolver(LoginSchema),
 		defaultValues: {
@@ -19,14 +26,31 @@ export default function SignInPage() {
 		},
 	});
 
+	const router = useRouter();
+
 	const onSubmit = async (data: LoginSchemaType) => {
-		console.log(data);
-		const result = await signIn('credentials', {
-			email: data.email,
-			password: data.password,
-			redirect: false,
-		});
-		console.log(result);
+		setError(null);
+		try {
+			const result = await signIn('credentials', {
+				email: data.email,
+				password: data.password,
+				redirect: false,
+			});
+
+			if (result?.error) {
+				if (result.error === 'CredentialsSignin') {
+					setError('Invalid Credentials');
+				} else {
+					setError('An error occurred while signing in');
+				}
+			} else {
+				await updateSession();
+				router.push('/');
+			}
+		} catch (err) {
+			console.error('Sign in error', err);
+			setError('An error occurred while signing in');
+		}
 	};
 
 	return (
@@ -37,6 +61,12 @@ export default function SignInPage() {
 					<CardDescription className='text-center'>Enter your email and password to sign in to you account</CardDescription>
 				</CardHeader>
 				<CardContent>
+					{error && (
+						<Alert variant='destructive' className='mb-4'>
+							<AlertCircleIcon />
+							<AlertTitle>{error}</AlertTitle>
+						</Alert>
+					)}
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
 							<FormField

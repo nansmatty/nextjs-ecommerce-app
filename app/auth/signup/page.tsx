@@ -15,6 +15,10 @@ export default function SignUpPage() {
 				<CardContent>
 					<form className='space-y-4'>
 						<div className='space-y-2'>
+							<Label htmlFor='name'>Name</Label>
+							<Input type='text' id='name' placeholder='name' />
+						</div>
+						<div className='space-y-2'>
 							<Label htmlFor='email'>Email</Label>
 							<Input type='email' id='email' placeholder='Email' />
 						</div>

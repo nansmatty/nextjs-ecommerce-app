@@ -41,6 +41,10 @@ export default function AuthStatus() {
 			<DropdownMenuContent>
 				<DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
+				<DropdownMenuItem>
+					<Link href='/account'>My Account</Link>
+				</DropdownMenuItem>
+				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={() => signOut()}>Signout</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

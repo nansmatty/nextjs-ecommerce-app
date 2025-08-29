@@ -5,9 +5,12 @@ import { getCart } from './actions';
 import prisma from './prisma';
 import { createCheckoutSession } from './stripe';
 import { ProcessCheckoutResponse } from './types';
+import { auth } from './auth';
 
 export async function processCheckout(): Promise<ProcessCheckoutResponse> {
 	const cart = await getCart();
+	const session = await auth();
+	const userId = session?.user?.id;
 
 	if (!cart || cart.items.length === 0) {
 		throw new Error('Cart is empty');
@@ -22,6 +25,7 @@ export async function processCheckout(): Promise<ProcessCheckoutResponse> {
 			const newOrder = await tx.order.create({
 				data: {
 					total,
+					userId: userId || null,
 				},
 			});
 

@@ -4,7 +4,6 @@ import bcrypt from 'bcryptjs';
 import Credentials from 'next-auth/providers/credentials';
 import { LoginSchema } from './schema';
 import prisma from './prisma';
-
 declare module 'next-auth' {
 	interface User {
 		id: string;

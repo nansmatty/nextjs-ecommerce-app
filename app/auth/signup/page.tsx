@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,8 +11,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { AlertCircleIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { registerUser } from '@/lib/actions/register-auth';
 
 export default function SignUpPage() {
+	const [error, setError] = useState<string | null>(null);
+	const router = useRouter();
+
 	const form = useForm<RegisterSchemaType>({
 		resolver: zodResolver(RegisterSchema),
 		defaultValues: {
@@ -23,7 +29,21 @@ export default function SignUpPage() {
 	});
 
 	const onSubmit = async (data: RegisterSchemaType) => {
-		console.log(data);
+		setError(null);
+		form.clearErrors();
+		try {
+			const result = await registerUser(data);
+
+			if (!result?.success) {
+				setError(result?.error || 'An error occurred while creating an account.');
+				return;
+			}
+
+			router.push('/auth/signin');
+		} catch (err) {
+			console.error('Registration error', err);
+			setError('An error occurred while creating an account.');
+		}
 	};
 
 	return (
@@ -33,12 +53,12 @@ export default function SignUpPage() {
 					<CardTitle className='text-center'>Create an account</CardTitle>
 				</CardHeader>
 				<CardContent>
-					{/* {error && (
+					{error && (
 						<Alert variant='destructive' className='mb-4'>
 							<AlertCircleIcon />
 							<AlertTitle>{error}</AlertTitle>
 						</Alert>
-					)} */}
+					)}
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
 							<FormField
@@ -93,7 +113,7 @@ export default function SignUpPage() {
 									</FormItem>
 								)}
 							/>
-							<Button type='submit' className='w-full'>
+							<Button type='submit' className='w-full' disabled={form.formState.isSubmitting}>
 								Sign Up
 							</Button>
 						</form>

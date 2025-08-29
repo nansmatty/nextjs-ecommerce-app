@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
 	const [error, setError] = useState<string | null>(null);
-	const { data: session, update: updateSession } = useSession();
+	const { update: updateSession } = useSession();
 
 	const form = useForm<LoginSchemaType>({
 		resolver: zodResolver(LoginSchema),

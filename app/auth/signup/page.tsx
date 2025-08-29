@@ -1,35 +1,103 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { RegisterSchema, RegisterSchemaType } from '@/lib/schema';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Alert, AlertTitle } from '@/components/ui/alert';
+import { AlertCircleIcon } from 'lucide-react';
 
 export default function SignUpPage() {
+	const form = useForm<RegisterSchemaType>({
+		resolver: zodResolver(RegisterSchema),
+		defaultValues: {
+			name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
+		},
+	});
+
+	const onSubmit = async (data: RegisterSchemaType) => {
+		console.log(data);
+	};
+
 	return (
 		<main className='flex min-h-screen flex-col items-center justify-center p-4'>
 			<Card className='w-full max-w-md'>
 				<CardHeader>
-					<CardTitle className='text-center'>Create account</CardTitle>
-					<CardDescription className='text-center'>Enter your email and password to create an account</CardDescription>
+					<CardTitle className='text-center'>Create an account</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<form className='space-y-4'>
-						<div className='space-y-2'>
-							<Label htmlFor='name'>Name</Label>
-							<Input type='text' id='name' placeholder='name' />
-						</div>
-						<div className='space-y-2'>
-							<Label htmlFor='email'>Email</Label>
-							<Input type='email' id='email' placeholder='Email' />
-						</div>
-						<div className='space-y-2'>
-							<Label htmlFor='password'>Password</Label>
-							<Input type='password' id='password' placeholder='Password' />
-						</div>
-						<Button type='submit' className='w-full'>
-							Sign Up
-						</Button>
-					</form>
+					{/* {error && (
+						<Alert variant='destructive' className='mb-4'>
+							<AlertCircleIcon />
+							<AlertTitle>{error}</AlertTitle>
+						</Alert>
+					)} */}
+					<Form {...form}>
+						<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+							<FormField
+								control={form.control}
+								name='name'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Name</FormLabel>
+										<FormControl>
+											<Input placeholder='Name' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='email'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input placeholder='Email' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='password'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Password</FormLabel>
+										<FormControl>
+											<Input type='password' placeholder='Password' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='confirmPassword'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Confirm Password</FormLabel>
+										<FormControl>
+											<Input type='password' placeholder='Confirm Password' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<Button type='submit' className='w-full'>
+								Sign Up
+							</Button>
+						</form>
+					</Form>
 				</CardContent>
 				<CardFooter>
 					<div className='w-full flex justify-center text-sm'>

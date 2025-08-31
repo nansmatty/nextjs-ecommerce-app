@@ -40,10 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Windows system directories
-**/Application Data/
-**/AppData/
-**/System Volume Information/
-**/\$Recycle.Bin/
-
 /app/generated/prisma

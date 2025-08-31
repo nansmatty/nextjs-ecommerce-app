@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { getProductBySlug } from '@/lib/actions';
 import { formatPrice } from '@/lib/utils';
-import { HeartIcon, ShoppingCart } from 'lucide-react';
+import { HeartIcon } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
@@ -41,6 +41,20 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 	if (!product) {
 		notFound();
 	}
+
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'Product',
+		name: product.name,
+		image: product.imageUrl,
+		description: product.description,
+		offer: {
+			'@type': 'Offer',
+			price: product.price,
+			priceCurrency: 'USD',
+			availability: product.inventory > 0 ? 'InStock' : 'OutOfStock',
+		},
+	};
 
 	const breadcrumbItems = [
 		{ label: 'Products', href: `/`, active: true },
@@ -100,6 +114,12 @@ const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) =>
 					</div>
 				</CardContent>
 			</Card>
+			<script
+				type='application/ld+json'
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+				}}
+			/>
 		</main>
 	);
 };

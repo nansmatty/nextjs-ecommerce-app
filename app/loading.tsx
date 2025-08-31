@@ -1,5 +1,4 @@
 import React from 'react';
-import ProductCardSkeleton from './ProductCardSkeleton';
 import ProductsSkeleton from './ProductsSkeleton';
 import { BreadcrumbsSkeleton } from '@/components/breadcrumbs-skeleton';
 

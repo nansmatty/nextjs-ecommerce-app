@@ -3,8 +3,6 @@ import { ModeToggle } from './mode-toggle';
 import MobileNav from './mobile-nav';
 import SearchInput from './search-input';
 import CartIndicator from './cart-indicator';
-import { Suspense } from 'react';
-import CartIndicatorSkeleton from './cart-indicator-skeleton';
 import AuthStatus from './auth-status';
 
 export const categories = [
@@ -43,9 +41,7 @@ const Navbar = () => {
 				{/* asChild help us to use all those predefined classes had to button will be use in Link so in sense we are using button but it is not a button */}
 				<div className='flex items-center gap-0'>
 					<AuthStatus />
-					<Suspense fallback={<CartIndicatorSkeleton />}>
-						<CartIndicator />
-					</Suspense>
+					<CartIndicator />
 					<ModeToggle />
 				</div>
 			</div>

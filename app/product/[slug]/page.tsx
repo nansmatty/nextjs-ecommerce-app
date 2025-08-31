@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { getProductBySlug } from '@/lib/actions';
+import prisma from '@/lib/prisma';
 import { formatPrice } from '@/lib/utils';
 import { HeartIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -32,6 +33,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			],
 		},
 	};
+}
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+	const products = await prisma.product.findMany({
+		select: {
+			slug: true,
+		},
+	});
+	return products.map((product) => ({
+		slug: product.slug,
+	}));
 }
 
 const ProductPage = async ({ params }: { params: Promise<{ slug: string }> }) => {

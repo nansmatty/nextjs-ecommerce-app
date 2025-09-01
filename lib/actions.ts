@@ -72,7 +72,7 @@ async function findCartFromCookie(): Promise<CartWithProducts | null> {
 
 	return unstable_cache(
 		async (id: string) => {
-			return await prisma.cart.findUnique({
+			return prisma.cart.findUnique({
 				where: { id },
 				include: {
 					items: {
@@ -85,7 +85,7 @@ async function findCartFromCookie(): Promise<CartWithProducts | null> {
 			});
 		},
 		[`cart-${cartId}`],
-		{ tags: [`cart-${cartId}`] }
+		{ tags: [`cart-${cartId}`], revalidate: 3600 }
 	)(cartId);
 }
 

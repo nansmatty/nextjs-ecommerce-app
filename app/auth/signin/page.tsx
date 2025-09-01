@@ -103,7 +103,7 @@ export default function SignInPage() {
 				</CardContent>
 				<CardFooter>
 					<div className='w-full flex justify-center text-sm'>
-						<p>Don't have an account ?</p>&nbsp;{' '}
+						<p>Don't have an account ?</p>&nbsp;
 						<Link href='/auth/signup' className='text-primary hover:underline'>
 							Sign Up
 						</Link>

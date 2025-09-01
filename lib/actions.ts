@@ -5,6 +5,7 @@ import { Prisma } from '@/app/generated/prisma';
 import { CartWithProducts, GetProductsParams, ShoppingCart } from './types';
 import { cookies } from 'next/headers';
 import { revalidateTag, unstable_cache } from 'next/cache';
+import { createProductsCacheKey, createProductsTags } from './cache-key';
 
 export async function getProductBySlug(slug: string) {
 	const product = await prisma.product.findUnique({
@@ -47,6 +48,22 @@ export async function getProducts({ slug, sort, query, page = 1, pageSize = 3 }:
 		skip,
 		take,
 	});
+}
+
+export async function getProductsCached({ query, slug, sort, page = 1, pageSize = 3 }: GetProductsParams) {
+	const cacheKey = createProductsCacheKey({
+		search: query,
+		categorySlug: slug,
+		sort,
+		page,
+		limit: pageSize,
+	});
+	const cacheTags = createProductsTags({ search: query, categorySlug: slug });
+
+	return unstable_cache(() => getProducts({ query, slug, sort, page, pageSize }), [cacheKey], {
+		tags: cacheTags,
+		revalidate: 3600,
+	})();
 }
 
 async function findCartFromCookie(): Promise<CartWithProducts | null> {
@@ -145,4 +162,25 @@ export async function updateCartItem(productId: string, quantity: number) {
 		console.error('Error updating cart item quantity:', error);
 		throw new Error('Failed to update cart item');
 	}
+}
+
+export async function getProductsCountCached() {
+	return unstable_cache(() => prisma.product.count(), ['products-count'], {
+		tags: ['products'],
+		revalidate: 3600,
+	})();
+}
+
+export async function getCategoryBySlug(slug: string) {
+	return await prisma.category.findUnique({
+		where: { slug },
+		select: { name: true, slug: true },
+	});
+}
+
+export async function getCategoryBySlugCached(slug: string) {
+	return unstable_cache(() => getCategoryBySlug(slug), [`category-${slug}`], {
+		tags: [`category-${slug}`],
+		revalidate: 3600,
+	})();
 }

@@ -1,9 +1,9 @@
 import Breadcrumbs from '@/components/breadcrumbs';
 import React, { Suspense } from 'react';
-import prisma from '@/lib/prisma';
 import ProductsSkeleton from '../../ProductsSkeleton';
 import { notFound } from 'next/navigation';
 import ProductListServerWrapper from '@/components/product-list-sever-wrapper';
+import { getCategoryBySlugCached } from '@/lib/actions';
 
 // In promise because everything in nextjs 15 is promise based
 type CategoryPageProps = {
@@ -13,10 +13,7 @@ type CategoryPageProps = {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
-	const category = await prisma.category.findUnique({
-		where: { slug },
-		select: { name: true },
-	});
+	const category = await getCategoryBySlugCached(slug);
 
 	if (!category) {
 		return {};
@@ -34,10 +31,8 @@ const CategoryPage = async ({ params, searchParams }: CategoryPageProps) => {
 	const { slug } = await params;
 	const { sort } = await searchParams;
 
-	const category = await prisma.category.findUnique({
-		where: { slug },
-		select: { name: true, slug: true },
-	});
+	const category = await getCategoryBySlugCached(slug);
+
 	if (!category) {
 		notFound();
 	}
